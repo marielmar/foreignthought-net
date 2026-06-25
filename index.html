@@ -705,7 +705,7 @@
     <button onclick="showPage('about')" id="nav-about" class="active" aria-current="page">About</button>
     <button onclick="showPage('work')" id="nav-work">Work</button>
     <button onclick="void(0)" aria-disabled="true" style="opacity:0.45;cursor:default;">Blog</button>
-    <button onclick="void(0)" aria-disabled="true" style="opacity:0.45;cursor:default;">Contact</button>
+    <button onclick="openContact()">Contact</button>
   </div>
 </nav>
 </header>
@@ -1275,7 +1275,7 @@
   <div style="display:flex;gap:12px;align-items:center;justify-content:center;">
     <a href="https://www.linkedin.com/in/marielmar/" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:9px 20px;background:var(--yellow);color:var(--bark);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;border-radius:2px;font-weight:500;">LinkedIn</a>
     <a href="https://www.behance.net/_marielmar" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:9px 20px;background:var(--yellow);color:var(--bark);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;border-radius:2px;font-weight:500;">Behance</a>
-    <a href="javascript:void(0)" style="display:inline-block;padding:9px 20px;border:1px solid var(--yellow-deep);color:var(--yellow-deep);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;border-radius:2px;font-weight:500;">Email</a>
+    <a href="#" onclick="revealEmail(this);return false;" data-user="leirám" data-domain="ten.thguohtngiérof" style="display:inline-block;padding:9px 20px;border:1px solid var(--yellow-deep);color:var(--yellow-deep);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;border-radius:2px;font-weight:500;">Email</a>
   </div>
   <div style="font-size:11px;color:var(--bark-mid);">© 2026 Mariel Alvarado-Knapick</div>
 </footer>
@@ -1315,5 +1315,71 @@
   }
 </script>
 
+
+<!-- ══ CONTACT MODAL ══ -->
+<div id="contact-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(44,31,20,0.6);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:#FAF8F5;border-radius:4px;padding:40px;max-width:480px;width:90%;position:relative;">
+    <button onclick="closeContact()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:#7A6555;">✕</button>
+    <p style="font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:#A8365A;margin-bottom:8px;font-weight:500;">Get in touch</p>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:#2C1F14;margin-bottom:20px;">Let's talk.</h2>
+    <form id="contact-form" action="https://formspree.io/f/xqevpqwb" method="POST">
+      <div style="margin-bottom:14px;">
+        <input type="text" name="name" placeholder="Your name" required
+          style="width:100%;padding:10px 14px;border:0.5px solid #C4B5A8;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;color:#2C1F14;background:#fff;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:14px;">
+        <input type="email" name="email" placeholder="Your email" required
+          style="width:100%;padding:10px 14px;border:0.5px solid #C4B5A8;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;color:#2C1F14;background:#fff;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:20px;">
+        <textarea name="message" placeholder="Your message" rows="4" required
+          style="width:100%;padding:10px 14px;border:0.5px solid #C4B5A8;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;color:#2C1F14;background:#fff;outline:none;resize:vertical;box-sizing:border-box;"></textarea>
+      </div>
+      <input type="text" name="_gotcha" style="display:none;">
+      <button type="submit"
+        style="width:100%;padding:12px;background:#B8962E;color:#fff;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;font-weight:500;">
+        Send message
+      </button>
+      <p id="form-success" style="display:none;margin-top:14px;font-size:12px;color:#A8365A;text-align:center;">Message sent. I'll be in touch soon.</p>
+    </form>
+  </div>
+</div>
+
+<script>
+// Contact modal
+function openContact() {
+  var m = document.getElementById('contact-modal');
+  m.style.display = 'flex';
+}
+function closeContact() {
+  document.getElementById('contact-modal').style.display = 'none';
+}
+document.getElementById('contact-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeContact();
+});
+
+// Formspree AJAX
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var form = this;
+  fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  }).then(function(r) {
+    if (r.ok) {
+      form.reset();
+      document.getElementById('form-success').style.display = 'block';
+    }
+  });
+});
+
+// Email obfuscation — reverses stored strings at click time
+function revealEmail(el) {
+  var u = el.getAttribute('data-user').split('').reverse().join('');
+  var d = el.getAttribute('data-domain').split('').reverse().join('');
+  window.location.href = 'mailto:' + u + '@' + d;
+}
+</script>
 </body>
 </html>
